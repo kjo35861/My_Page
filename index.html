@@ -56,8 +56,11 @@
 
   /* ---------- status line ---------- */
   .statusbar{
+    border-top:4px solid var(--ink);
     border-bottom:1px solid var(--line);
     background:var(--paper-raised);
+    position:relative;
+    z-index:1;
   }
   .statusbar .wrap{
     display:flex;
@@ -94,6 +97,87 @@
     100%{ transform:scale(2.2); opacity:0; }
   }
   .statusbar .left{ display:flex; align-items:center; }
+
+  /* ---------- landing (first screen, keyword only) ---------- */
+  .landing{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    position:relative;
+    padding:24px;
+    overflow:hidden;
+    background:var(--ink);
+    box-shadow:0 24px 48px rgba(0,0,0,0.35);
+  }
+  .landing::before,
+  .landing::after{
+    content:'';
+    position:absolute;
+    border-radius:50%;
+    filter:blur(70px);
+    z-index:0;
+    pointer-events:none;
+  }
+  .landing::before{
+    width:420px;
+    height:420px;
+    top:-180px;
+    left:-140px;
+    background:radial-gradient(circle, var(--signal) 0%, transparent 70%);
+    opacity:0.35;
+  }
+  .landing::after{
+    width:340px;
+    height:340px;
+    bottom:-160px;
+    right:-100px;
+    background:radial-gradient(circle, var(--accent2) 0%, transparent 70%);
+    opacity:0.28;
+  }
+  .landing-keyword{
+    position:relative;
+    z-index:1;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:clamp(1.6rem, 4.2vw, 2.6rem);
+    line-height:1.5;
+    letter-spacing:-0.01em;
+    max-width:20ch;
+    margin:0;
+    background:linear-gradient(120deg, #f4f5f3 25%, #3ecf95 65%, #e08a45 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    color:#f4f5f3;
+  }
+  .scroll-cue{
+    position:absolute;
+    left:50%;
+    bottom:36px;
+    transform:translateX(-50%);
+    z-index:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    color:rgba(244,245,243,0.55);
+    text-decoration:none;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.1em;
+  }
+  .scroll-cue svg{
+    width:16px;
+    height:16px;
+    animation:cue-bounce 1.8s ease-in-out infinite;
+  }
+  @keyframes cue-bounce{
+    0%, 100%{ transform:translateY(0); }
+    50%{ transform:translateY(6px); }
+  }
 
   /* ---------- hero ---------- */
   header.hero{
@@ -442,7 +526,15 @@
 </head>
 <body>
 
-  <div class="statusbar">
+  <section class="landing">
+    <p class="landing-keyword">원인을 끝까지 추적해<br>문제를 해결하는 개발자</p>
+    <a class="scroll-cue" href="#main" aria-label="아래로 스크롤하여 소개 보기">
+      <span>SCROLL</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </a>
+  </section>
+
+  <div class="statusbar" id="main">
     <div class="wrap">
       <span class="left"><span class="dot"></span>지원 가능 · 신입 백엔드 / 풀스택</span>
       <span>Last updated 2026.08</span>
@@ -568,6 +660,83 @@
       <span class="meta"><a href="https://github.com/kjo35861" target="_blank" rel="noopener">github.com/kjo35861</a></span>
     </div>
   </footer>
+
+  <script>
+    (function(){
+      var landing = document.querySelector('.landing');
+      var statusbar = document.getElementById('main');
+      if(!landing || !statusbar) return;
+
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var cooldown = false;
+
+      function scrollToEl(el){
+        if(cooldown) return;
+        cooldown = true;
+        el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+        setTimeout(function(){ cooldown = false; }, 700);
+      }
+
+      // Only within this vertical zone (landing + a bit past the statusbar) do we intervene.
+      // Beyond it, every handler below returns false and normal free scrolling takes over.
+      function zoneBottom(){
+        var rect = statusbar.getBoundingClientRect();
+        return rect.bottom + window.scrollY + 40;
+      }
+      function landingHeight(){
+        return landing.offsetHeight;
+      }
+
+      function tryDown(){
+        if(cooldown) return false;
+        var y = window.scrollY;
+        if(y < zoneBottom() && y < landingHeight() * 0.9){
+          scrollToEl(statusbar);
+          return true;
+        }
+        return false;
+      }
+
+      function tryUp(){
+        if(cooldown) return false;
+        var y = window.scrollY;
+        if(y < zoneBottom() && y >= landingHeight() * 0.4){
+          scrollToEl(landing);
+          return true;
+        }
+        return false;
+      }
+
+      function onWheel(e){
+        if(e.deltaY > 0){
+          if(tryDown()) e.preventDefault();
+        } else if(e.deltaY < 0){
+          if(tryUp()) e.preventDefault();
+        }
+      }
+
+      var touchStartY = 0;
+      function onTouchStart(e){ touchStartY = e.touches[0].clientY; }
+      function onTouchEnd(e){
+        var dy = touchStartY - e.changedTouches[0].clientY;
+        if(dy > 30) tryDown();
+        else if(dy < -30) tryUp();
+      }
+
+      function onKeydown(e){
+        if(e.key === 'ArrowDown' || e.key === 'PageDown'){
+          if(tryDown()) e.preventDefault();
+        } else if(e.key === 'ArrowUp' || e.key === 'PageUp'){
+          if(tryUp()) e.preventDefault();
+        }
+      }
+
+      window.addEventListener('wheel', onWheel, { passive:false });
+      window.addEventListener('touchstart', onTouchStart, { passive:true });
+      window.addEventListener('touchend', onTouchEnd, { passive:true });
+      window.addEventListener('keydown', onKeydown);
+    })();
+  </script>
 
   <script>
     (function(){
