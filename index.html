@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>김준오 — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f7f8f6;
+    --paper-raised:#ffffff;
+    --ink:#14171a;
+    --ink-soft:#565b62;
+    --ink-faint:#8b9096;
+    --line:#dfe2de;
+    --signal:#1f7a5c;
+    --signal-soft:#e9f3ee;
+    --max-w:760px;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans KR', 'IBM Plex Sans', sans-serif;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:inherit; }
+
+  .wrap{
+    max-width:var(--max-w);
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  /* ---------- status line ---------- */
+  .statusbar{
+    border-bottom:1px solid var(--line);
+    background:var(--paper-raised);
+  }
+  .statusbar .wrap{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-top:16px;
+    padding-bottom:16px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    letter-spacing:0.02em;
+  }
+  .statusbar .dot{
+    display:inline-block;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--signal);
+    margin-right:8px;
+    flex:none;
+  }
+  .statusbar .left{ display:flex; align-items:center; }
+
+  /* ---------- hero ---------- */
+  header.hero{
+    padding:72px 0 56px;
+  }
+  .hero .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--signal);
+    letter-spacing:0.08em;
+    margin:0 0 18px;
+  }
+  h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:clamp(2.2rem, 5vw, 3.1rem);
+    line-height:1.08;
+    letter-spacing:-0.01em;
+    margin:0 0 14px;
+  }
+  .role{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:500;
+    font-size:1.15rem;
+    color:var(--ink-soft);
+    margin:0 0 22px;
+  }
+  .bio{
+    max-width:56ch;
+    color:var(--ink-soft);
+    font-size:1rem;
+    margin:0 0 30px;
+  }
+  .cta-row{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:11px 18px;
+    border-radius:6px;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:500;
+    border:1px solid var(--line);
+    transition:border-color .15s ease, transform .15s ease, background .15s ease;
+  }
+  .btn:focus-visible, a:focus-visible, .ticket:focus-visible{
+    outline:2px solid var(--signal);
+    outline-offset:2px;
+  }
+  .btn-primary{
+    background:var(--ink);
+    color:var(--paper-raised);
+    border-color:var(--ink);
+  }
+  .btn-primary:hover{ transform:translateY(-1px); }
+  .btn-ghost:hover{ border-color:var(--ink); transform:translateY(-1px); }
+  .btn svg{ width:15px; height:15px; flex:none; }
+
+  /* ---------- section framing ---------- */
+  section{ padding:52px 0; }
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    border-bottom:1px solid var(--line);
+    padding-bottom:14px;
+    margin-bottom:32px;
+  }
+  .section-head h2{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:1.3rem;
+    font-weight:600;
+    margin:0;
+  }
+  .section-head .count{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-faint);
+  }
+
+  /* ---------- diagnostic log / tickets ---------- */
+  .tickets{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .ticket{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:22px 24px;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .ticket:hover{
+    border-color:#c9cdc7;
+    box-shadow:0 2px 14px rgba(20,23,26,0.05);
+  }
+  .ticket-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:10px;
+    gap:12px;
+  }
+  .ticket-id{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-faint);
+    letter-spacing:0.02em;
+  }
+  .badge{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    font-weight:500;
+    letter-spacing:0.04em;
+    color:var(--signal);
+    background:var(--signal-soft);
+    padding:3px 9px;
+    border-radius:99px;
+    white-space:nowrap;
+  }
+  .ticket h3{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:1.08rem;
+    font-weight:600;
+    margin:0 0 14px;
+  }
+  .trace{
+    display:grid;
+    grid-template-columns:64px 1fr;
+    gap:6px 14px;
+    font-size:14.5px;
+  }
+  .trace dt{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-faint);
+    padding-top:2px;
+  }
+  .trace dd{
+    margin:0;
+    color:var(--ink);
+  }
+  .trace dd.result{ color:var(--ink-soft); }
+
+  /* ---------- project ---------- */
+  .project-card{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:28px;
+  }
+  .project-card .ptop{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-bottom:12px;
+  }
+  .project-card h3{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:1.25rem;
+    font-weight:600;
+    margin:0;
+  }
+  .project-card .tagline{
+    color:var(--ink-soft);
+    margin:0 0 18px;
+    max-width:58ch;
+  }
+  .stack{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:20px;
+  }
+  .stack span{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:4px 9px;
+  }
+  .role-line{
+    display:grid;
+    grid-template-columns:64px 1fr;
+    gap:6px 14px;
+    font-size:14.5px;
+    margin-bottom:20px;
+  }
+  .role-line dt{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-faint);
+    padding-top:2px;
+  }
+  .role-line dd{ margin:0; }
+
+  /* ---------- footer ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    padding:36px 0 56px;
+  }
+  footer .wrap{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  footer .name{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:14px;
+  }
+  footer .meta{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-faint);
+  }
+
+  @media (max-width:560px){
+    header.hero{ padding:52px 0 40px; }
+    section{ padding:40px 0; }
+    .trace, .role-line{ grid-template-columns:1fr; gap:2px 0; }
+    .trace dt, .role-line dt{ padding-top:10px; }
+    .ticket{ padding:20px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="statusbar">
+    <div class="wrap">
+      <span class="left"><span class="dot"></span>지원 가능 · 신입 백엔드 / 풀스택</span>
+      <span>Last updated 2026.08</span>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">PORTFOLIO</p>
+      <h1>김준오</h1>
+      <p class="role">원인을 끝까지 찾아 해결하는 풀스택 개발자</p>
+      <p class="bio">
+        React와 Spring Boot 기반 서비스를 직접 만들고, 문제가 생기면
+        표면적인 해결책보다 원인을 먼저 찾습니다. 관심 있는 기술은
+        끝까지 파고들어 직접 환경을 구성해보는 걸 좋아합니다.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://github.com/kjo35861" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub 보기
+        </a>
+        <a class="btn btn-ghost" href="#log">해결한 문제 보기</a>
+      </div>
+    </div>
+  </header>
+
+  <section id="log">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>해결한 문제들</h2>
+        <span class="count">3 RESOLVED</span>
+      </div>
+
+      <div class="tickets">
+
+        <article class="ticket" tabindex="0">
+          <div class="ticket-top">
+            <span class="ticket-id">ISSUE-231</span>
+            <span class="badge">RESOLVED</span>
+          </div>
+          <h3>CORS 오류의 근본 원인 추적</h3>
+          <dl class="trace">
+            <dt>상황</dt>
+            <dd>React와 Spring Boot를 연동하는 프로젝트에서 새로 추가한 PUT API가 브라우저에서 CORS 오류로 막혔다.</dd>
+            <dt>조치</dt>
+            <dd>필터 체인과 Security 설정을 단계별로 점검하며 원인을 경로 매핑 문제로 좁혀 나갔다.</dd>
+            <dt>결과</dt>
+            <dd class="result">설정 레벨의 근본 원인을 찾아 수정했고, 이후 비슷한 API를 추가할 때도 같은 문제가 반복되지 않도록 정리했다.</dd>
+          </dl>
+        </article>
+
+        <article class="ticket" tabindex="0">
+          <div class="ticket-top">
+            <span class="ticket-id">ISSUE-142</span>
+            <span class="badge">RESOLVED</span>
+          </div>
+          <h3>React 기반 서비스 직접 구축</h3>
+          <dl class="trace">
+            <dt>상황</dt>
+            <dd>florography 프로젝트에서 감정 기록과 식물 키우기를 결합한 웹 서비스를 처음부터 만들어야 했다.</dd>
+            <dt>조치</dt>
+            <dd>페이지 구성부터 API 연동, 상태관리, UI 구현까지 프론트엔드 전 영역을 맡아 진행했다.</dd>
+            <dt>결과</dt>
+            <dd class="result">프론트엔드와 백엔드가 실제로 어떻게 연결되는지 이해했고, 팀이 쓸 수 있는 동작하는 서비스를 완성했다.</dd>
+          </dl>
+        </article>
+
+        <article class="ticket" tabindex="0">
+          <div class="ticket-top">
+            <span class="ticket-id">ISSUE-088</span>
+            <span class="badge">RESOLVED</span>
+          </div>
+          <h3>게임 서버 인프라 직접 구성</h3>
+          <dl class="trace">
+            <dt>상황</dt>
+            <dd>Minecraft Pixelmon 서버를 운영하고 싶었지만 참고할 만한 표준 구성이 마땅치 않았다.</dd>
+            <dt>조치</dt>
+            <dd>Docker, Java, NeoForge 환경을 직접 설정하고 서버 명령어와 모드 충돌 문제를 하나씩 해결했다.</dd>
+            <dt>결과</dt>
+            <dd class="result">안정적으로 운영되는 서버 환경을 구축했고, 관심 있는 기술은 끝까지 파고드는 습관을 확인했다.</dd>
+          </dl>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="project">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>대표 프로젝트</h2>
+        <span class="count">FEATURED</span>
+      </div>
+
+      <div class="project-card">
+        <div class="ptop">
+          <h3>florography</h3>
+        </div>
+        <p class="tagline">
+          감정 일기와 식물 키우기 게임화를 결합한 멘탈 케어 웹 서비스.
+          4인 팀 프로젝트로 기획부터 개발까지 함께 진행했다.
+        </p>
+        <div class="stack">
+          <span>React</span>
+          <span>Spring Boot</span>
+          <span>MyBatis</span>
+        </div>
+        <dl class="role-line">
+          <dt>역할</dt>
+          <dd>React 기반 프론트엔드 개발 — 페이지 구성, API 연동, 상태관리, UI 구현</dd>
+        </dl>
+        <a class="btn btn-ghost" href="https://github.com/Florography" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+          저장소 보기
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <span class="name">김준오</span>
+      <span class="meta"><a href="https://github.com/kjo35861" target="_blank" rel="noopener">github.com/kjo35861</a></span>
+    </div>
+  </footer>
+
+</body>
+</html>
