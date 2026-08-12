@@ -18,7 +18,9 @@
     --line:#dfe2de;
     --signal:#1f7a5c;
     --signal-soft:#e9f3ee;
-    --max-w:760px;
+    --accent2:#c96f2e;
+    --signal-glow:rgba(31,122,92,0.16);
+    --max-w:820px;
   }
 
   *{ box-sizing:border-box; }
@@ -31,6 +33,17 @@
     font-family:'IBM Plex Sans KR', 'IBM Plex Sans', sans-serif;
     line-height:1.65;
     -webkit-font-smoothing:antialiased;
+    position:relative;
+  }
+  body::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    background:
+      radial-gradient(720px circle at 12% -10%, rgba(31,122,92,0.10), transparent 60%),
+      radial-gradient(640px circle at 100% 18%, rgba(201,111,46,0.08), transparent 55%),
+      radial-gradient(600px circle at 15% 90%, rgba(31,122,92,0.06), transparent 55%);
   }
 
   a{ color:inherit; }
@@ -65,32 +78,89 @@
     background:var(--signal);
     margin-right:8px;
     flex:none;
+    position:relative;
+  }
+  .statusbar .dot::after{
+    content:'';
+    position:absolute;
+    inset:-4px;
+    border-radius:50%;
+    background:var(--signal);
+    opacity:0.35;
+    animation:pulse-ring 2.2s ease-out infinite;
+  }
+  @keyframes pulse-ring{
+    0%{ transform:scale(0.6); opacity:0.45; }
+    100%{ transform:scale(2.2); opacity:0; }
   }
   .statusbar .left{ display:flex; align-items:center; }
 
   /* ---------- hero ---------- */
   header.hero{
+    position:relative;
     padding:72px 0 56px;
+    overflow:hidden;
+  }
+  header.hero::before,
+  header.hero::after{
+    content:'';
+    position:absolute;
+    border-radius:50%;
+    filter:blur(60px);
+    z-index:0;
+    pointer-events:none;
+  }
+  header.hero::before{
+    width:340px;
+    height:340px;
+    top:-160px;
+    right:-100px;
+    background:radial-gradient(circle, var(--signal) 0%, transparent 70%);
+    opacity:0.12;
+  }
+  header.hero::after{
+    width:260px;
+    height:260px;
+    bottom:-140px;
+    left:-80px;
+    background:radial-gradient(circle, var(--accent2) 0%, transparent 70%);
+    opacity:0.08;
+  }
+  header.hero .wrap{
+    position:relative;
+    z-index:1;
   }
   .hero .eyebrow{
+    display:inline-flex;
+    align-items:center;
     font-family:'IBM Plex Mono', monospace;
     font-size:12px;
+    font-weight:500;
     color:var(--signal);
     letter-spacing:0.08em;
-    margin:0 0 18px;
+    background:var(--signal-soft);
+    border:1px solid rgba(31,122,92,0.18);
+    border-radius:999px;
+    padding:5px 14px;
+    margin:0 0 22px;
   }
   h1{
     font-family:'Space Grotesk', sans-serif;
     font-weight:700;
-    font-size:clamp(2.2rem, 5vw, 3.1rem);
-    line-height:1.08;
-    letter-spacing:-0.01em;
+    font-size:clamp(2.6rem, 6.5vw, 4.2rem);
+    line-height:1.04;
+    letter-spacing:-0.02em;
     margin:0 0 14px;
+    background:linear-gradient(120deg, var(--ink) 35%, var(--signal) 75%, var(--accent2) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    color:var(--ink);
   }
   .role{
     font-family:'Space Grotesk', sans-serif;
     font-weight:500;
-    font-size:1.15rem;
+    font-size:1.25rem;
     color:var(--ink-soft);
     margin:0 0 22px;
   }
@@ -109,24 +179,27 @@
     display:inline-flex;
     align-items:center;
     gap:8px;
-    padding:11px 18px;
-    border-radius:6px;
+    padding:13px 22px;
+    border-radius:999px;
     text-decoration:none;
     font-size:14px;
-    font-weight:500;
+    font-weight:600;
     border:1px solid var(--line);
-    transition:border-color .15s ease, transform .15s ease, background .15s ease;
+    transition:border-color .15s ease, transform .15s ease, background .15s ease, box-shadow .2s ease;
   }
   .btn:focus-visible, a:focus-visible, .ticket:focus-visible{
     outline:2px solid var(--signal);
     outline-offset:2px;
   }
   .btn-primary{
-    background:var(--ink);
+    background:linear-gradient(135deg, var(--ink) 0%, #2a2f35 100%);
     color:var(--paper-raised);
     border-color:var(--ink);
   }
-  .btn-primary:hover{ transform:translateY(-1px); }
+  .btn-primary:hover{
+    transform:translateY(-1px);
+    box-shadow:0 6px 20px rgba(20,23,26,0.22);
+  }
   .btn-ghost:hover{ border-color:var(--ink); transform:translateY(-1px); }
   .btn svg{ width:15px; height:15px; flex:none; }
 
@@ -142,9 +215,21 @@
   }
   .section-head h2{
     font-family:'Space Grotesk', sans-serif;
-    font-size:1.3rem;
-    font-weight:600;
+    font-size:1.7rem;
+    font-weight:700;
+    letter-spacing:-0.01em;
     margin:0;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .section-head h2::before{
+    content:'';
+    width:16px;
+    height:16px;
+    border-radius:5px;
+    background:linear-gradient(135deg, var(--signal), var(--accent2));
+    flex:none;
   }
   .section-head .count{
     font-family:'IBM Plex Mono', monospace;
@@ -159,15 +244,28 @@
     gap:14px;
   }
   .ticket{
-    background:var(--paper-raised);
-    border:1px solid var(--line);
-    border-radius:10px;
-    padding:22px 24px;
-    transition:border-color .15s ease, box-shadow .15s ease;
+    background:rgba(255,255,255,0.72);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(223,226,222,0.9);
+    border-radius:18px;
+    padding:26px 28px;
+    position:relative;
+    overflow:hidden;
+    transition:border-color .2s ease, box-shadow .25s ease, transform .25s ease;
+  }
+  .ticket::before{
+    content:'';
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width:4px;
+    background:linear-gradient(180deg, var(--signal), var(--accent2));
+    opacity:0.85;
   }
   .ticket:hover{
-    border-color:#c9cdc7;
-    box-shadow:0 2px 14px rgba(20,23,26,0.05);
+    border-color:rgba(31,122,92,0.3);
+    box-shadow:0 14px 34px var(--signal-glow);
+    transform:translateY(-3px);
   }
   .ticket-top{
     display:flex;
@@ -185,19 +283,21 @@
   .badge{
     font-family:'IBM Plex Mono', monospace;
     font-size:11px;
-    font-weight:500;
+    font-weight:600;
     letter-spacing:0.04em;
-    color:var(--signal);
-    background:var(--signal-soft);
-    padding:3px 9px;
-    border-radius:99px;
+    color:#ffffff;
+    background:linear-gradient(120deg, var(--signal), #2a9974);
+    padding:4px 11px;
+    border-radius:999px;
     white-space:nowrap;
+    box-shadow:0 2px 8px rgba(31,122,92,0.25);
   }
   .ticket h3{
     font-family:'Space Grotesk', sans-serif;
-    font-size:1.08rem;
-    font-weight:600;
-    margin:0 0 14px;
+    font-size:1.15rem;
+    font-weight:700;
+    letter-spacing:-0.005em;
+    margin:0 0 16px;
   }
   .trace{
     display:grid;
@@ -219,10 +319,27 @@
 
   /* ---------- project ---------- */
   .project-card{
-    background:var(--paper-raised);
-    border:1px solid var(--line);
-    border-radius:10px;
-    padding:28px;
+    background:rgba(255,255,255,0.72);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(223,226,222,0.9);
+    border-radius:20px;
+    padding:32px;
+    position:relative;
+    overflow:hidden;
+    transition:box-shadow .25s ease, transform .25s ease, border-color .2s ease;
+  }
+  .project-card::before{
+    content:'';
+    position:absolute;
+    left:0; top:0; right:0;
+    height:4px;
+    background:linear-gradient(90deg, var(--accent2), var(--signal));
+  }
+  .project-card:hover{
+    border-color:rgba(201,111,46,0.3);
+    box-shadow:0 16px 36px rgba(201,111,46,0.16);
+    transform:translateY(-3px);
   }
   .project-card .ptop{
     display:flex;
@@ -254,8 +371,13 @@
     font-size:11.5px;
     color:var(--ink-soft);
     border:1px solid var(--line);
-    border-radius:6px;
-    padding:4px 9px;
+    border-radius:999px;
+    padding:5px 12px;
+    transition:border-color .15s ease, color .15s ease;
+  }
+  .stack span:hover{
+    border-color:var(--accent2);
+    color:var(--accent2);
   }
   .role-line{
     display:grid;
@@ -304,7 +426,17 @@
   }
 
   @media (prefers-reduced-motion: reduce){
-    *{ transition:none !important; scroll-behavior:auto !important; }
+    *{ transition:none !important; scroll-behavior:auto !important; animation:none !important; }
+  }
+
+  .reveal{
+    opacity:0;
+    transform:translateY(16px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  .reveal.in-view{
+    opacity:1;
+    transform:translateY(0);
   }
 </style>
 </head>
@@ -346,7 +478,7 @@
 
       <div class="tickets">
 
-        <article class="ticket">
+        <article class="ticket reveal">
           <div class="ticket-top">
             <span class="ticket-id">ISSUE-231</span>
             <span class="badge">RESOLVED</span>
@@ -362,7 +494,7 @@
           </dl>
         </article>
 
-        <article class="ticket">
+        <article class="ticket reveal">
           <div class="ticket-top">
             <span class="ticket-id">ISSUE-142</span>
             <span class="badge">RESOLVED</span>
@@ -378,7 +510,7 @@
           </dl>
         </article>
 
-        <article class="ticket">
+        <article class="ticket reveal">
           <div class="ticket-top">
             <span class="ticket-id">ISSUE-088</span>
             <span class="badge">RESOLVED</span>
@@ -405,7 +537,7 @@
         <span class="count">FEATURED</span>
       </div>
 
-      <div class="project-card">
+      <div class="project-card reveal">
         <div class="ptop">
           <h3>florography</h3>
         </div>
@@ -436,6 +568,26 @@
       <span class="meta"><a href="https://github.com/kjo35861" target="_blank" rel="noopener">github.com/kjo35861</a></span>
     </div>
   </footer>
+
+  <script>
+    (function(){
+      var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var items = document.querySelectorAll('.reveal');
+      if(prefersReduced || !('IntersectionObserver' in window)){
+        items.forEach(function(el){ el.classList.add('in-view'); });
+        return;
+      }
+      var observer = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){
+            entry.target.classList.add('in-view');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold:0.15 });
+      items.forEach(function(el){ observer.observe(el); });
+    })();
+  </script>
 
 </body>
 </html>
