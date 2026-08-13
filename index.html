@@ -137,6 +137,17 @@
     background:radial-gradient(circle, var(--accent2) 0%, transparent 70%);
     opacity:0.28;
   }
+  .landing-name{
+    position:relative;
+    z-index:1;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:500;
+    font-size:15px;
+    letter-spacing:0.05em;
+    color:rgba(244,245,243,0.8);
+    text-shadow:0 0 26px rgba(62,207,149,0.4), 0 0 46px rgba(224,138,69,0.18);
+    margin:0 0 20px;
+  }
   .landing-keyword{
     position:relative;
     z-index:1;
@@ -153,6 +164,28 @@
     -webkit-text-fill-color:transparent;
     color:#f4f5f3;
   }
+  .landing-evidence{
+    position:relative;
+    z-index:1;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    margin-top:26px;
+    padding:9px 18px;
+    border:1px solid rgba(244,245,243,0.25);
+    border-radius:999px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    font-weight:500;
+    color:#f4f5f3;
+    text-decoration:none;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .landing-evidence:hover{
+    border-color:rgba(244,245,243,0.55);
+    background:rgba(244,245,243,0.06);
+  }
+  .landing-evidence svg{ width:12px; height:12px; }
   .scroll-cue{
     position:absolute;
     left:50%;
@@ -271,7 +304,7 @@
     border:1px solid var(--line);
     transition:border-color .15s ease, transform .15s ease, background .15s ease, box-shadow .2s ease;
   }
-  .btn:focus-visible, a:focus-visible, .ticket:focus-visible{
+  .btn:focus-visible, a:focus-visible{
     outline:2px solid var(--signal);
     outline-offset:2px;
   }
@@ -401,6 +434,61 @@
   }
   .trace dd.result{ color:var(--ink-soft); }
 
+  .ticket-actions{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:16px;
+    padding-top:14px;
+    border-top:1px dashed var(--line);
+  }
+
+  .ticket-evidence{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    font-weight:500;
+    color:var(--signal);
+    text-decoration:none;
+  }
+  .ticket-evidence svg{ width:12px; height:12px; transition:transform .15s ease; }
+  .ticket-evidence:hover svg{ transform:translateX(3px); }
+
+  .ticket-toggle{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:0;
+    background:none;
+    border:none;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    font-weight:500;
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .ticket-toggle:hover{ color:var(--signal); }
+  .ticket-toggle .chevron{
+    width:12px;
+    height:12px;
+    transition:transform .2s ease;
+  }
+  .ticket-toggle[aria-expanded="true"] .chevron{
+    transform:rotate(180deg);
+  }
+  .ticket-detail{
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px dashed var(--line);
+    font-size:13.5px;
+    color:var(--ink-soft);
+  }
+  .ticket-detail p{ margin:0; }
+
   /* ---------- project ---------- */
   .project-card{
     background:rgba(255,255,255,0.72);
@@ -478,6 +566,65 @@
   }
   .role-line dd{ margin:0; }
 
+  /* ---------- scope / target statement ---------- */
+  #scope{ padding:8px 0 24px; }
+  .scope-card{
+    border:1px dashed var(--line);
+    border-radius:14px;
+    padding:22px 24px;
+    background:rgba(255,255,255,0.5);
+  }
+  .scope-target{
+    margin:0 0 18px;
+    font-size:13.5px;
+    color:var(--ink-soft);
+  }
+  .scope-target strong{ color:var(--ink); font-weight:600; }
+  .scope-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    color:var(--ink-faint);
+    letter-spacing:0.08em;
+    margin-right:8px;
+  }
+  .scope-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+  .scope-heading{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.06em;
+    color:var(--signal);
+    margin:0 0 8px;
+  }
+  .scope-heading--off{ color:var(--ink-faint); }
+  .scope-grid ul{
+    list-style:none;
+    margin:0;
+    padding:0;
+    font-size:13px;
+    color:var(--ink-soft);
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .scope-grid li::before{
+    content:'✓ ';
+    color:var(--signal);
+    font-weight:600;
+  }
+  .scope-grid ul.off li::before{
+    content:'✕ ';
+    color:var(--ink-faint);
+  }
+  .scope-grid ul.off li{ color:var(--ink-faint); }
+
+  @media (max-width:560px){
+    .scope-grid{ grid-template-columns:1fr; }
+  }
+
   /* ---------- footer ---------- */
   footer{
     border-top:1px solid var(--line);
@@ -527,7 +674,12 @@
 <body>
 
   <section class="landing">
+    <p class="landing-name">김준오</p>
     <p class="landing-keyword">원인을 끝까지 추적해<br>문제를 해결하는 개발자</p>
+    <a class="landing-evidence" href="https://github.com/kjo35861" target="_blank" rel="noopener">
+      GitHub에서 근거 보기
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg>
+    </a>
     <a class="scroll-cue" href="#main" aria-label="아래로 스크롤하여 소개 보기">
       <span>SCROLL</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
@@ -584,6 +736,15 @@
             <dt>결과</dt>
             <dd class="result">설정 레벨의 근본 원인을 찾아 수정했고, 이후 비슷한 API를 추가할 때도 같은 문제가 반복되지 않도록 정리했다.</dd>
           </dl>
+          <div class="ticket-actions">
+            <button class="ticket-toggle" type="button" aria-expanded="false" aria-controls="detail-231">
+              <span>선택 이유 더보기</span>
+              <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+            </button>
+          </div>
+          <div class="ticket-detail" id="detail-231" hidden>
+            <p>왜 이 방식을 택했나: 증상만 우회하는 미봉책보다, 같은 팀이 이후에도 재사용할 수 있는 원인 문서를 남기는 쪽을 택했다.</p>
+          </div>
         </article>
 
         <article class="ticket reveal">
@@ -600,6 +761,19 @@
             <dt>결과</dt>
             <dd class="result">프론트엔드와 백엔드가 실제로 어떻게 연결되는지 이해했고, 팀이 쓸 수 있는 동작하는 서비스를 완성했다.</dd>
           </dl>
+          <div class="ticket-actions">
+            <button class="ticket-toggle" type="button" aria-expanded="false" aria-controls="detail-142">
+              <span>선택 이유 더보기</span>
+              <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+            </button>
+            <a class="ticket-evidence" href="https://github.com/Florography" target="_blank" rel="noopener">
+              근거 보기 — github.com/Florography
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg>
+            </a>
+          </div>
+          <div class="ticket-detail" id="detail-142" hidden>
+            <p>왜 이 방식을 택했나: 프론트엔드 전체를 맡으면서 백엔드 API 계약을 미리 팀과 맞춰, 병목 없이 통합할 수 있었다.</p>
+          </div>
         </article>
 
         <article class="ticket reveal">
@@ -616,6 +790,15 @@
             <dt>결과</dt>
             <dd class="result">안정적으로 운영되는 서버 환경을 구축했고, 관심 있는 기술은 끝까지 파고드는 습관을 확인했다.</dd>
           </dl>
+          <div class="ticket-actions">
+            <button class="ticket-toggle" type="button" aria-expanded="false" aria-controls="detail-088">
+              <span>선택 이유 더보기</span>
+              <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+            </button>
+          </div>
+          <div class="ticket-detail" id="detail-088" hidden>
+            <p>왜 이 방식을 택했나: 커뮤니티 튜토리얼을 그대로 따르기보다 로그를 직접 읽어가며 내 환경에 맞는 설정을 찾는 쪽을 택했다.</p>
+          </div>
         </article>
 
       </div>
@@ -654,12 +837,56 @@
     </div>
   </section>
 
+  <section id="scope">
+    <div class="wrap">
+      <div class="scope-card reveal">
+        <p class="scope-target">
+          <span class="scope-label">대상</span>
+          이 페이지는 <strong>채용 담당자</strong>에게 보여주기 위한 이력서이다.
+        </p>
+        <div class="scope-grid">
+          <div>
+            <p class="scope-heading">공개한 것</p>
+            <ul>
+              <li>이름</li>
+              <li>문제 해결 사례 3개</li>
+              <li>프로젝트 · GitHub 링크</li>
+            </ul>
+          </div>
+          <div>
+            <p class="scope-heading scope-heading--off">공개하지 않은 것</p>
+            <ul class="off">
+              <li>이메일 · 전화번호</li>
+              <li>실거주 주소</li>
+              <li>학교명 · 얼굴 사진</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <footer>
     <div class="wrap">
       <span class="name">김준오</span>
       <span class="meta"><a href="https://github.com/kjo35861" target="_blank" rel="noopener">github.com/kjo35861</a></span>
     </div>
   </footer>
+
+  <script>
+    (function(){
+      document.querySelectorAll('.ticket-toggle').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var expanded = btn.getAttribute('aria-expanded') === 'true';
+          var detail = document.getElementById(btn.getAttribute('aria-controls'));
+          var label = btn.querySelector('span');
+          btn.setAttribute('aria-expanded', String(!expanded));
+          if(detail) detail.hidden = expanded;
+          if(label) label.textContent = expanded ? '선택 이유 더보기' : '선택 이유 접기';
+        });
+      });
+    })();
+  </script>
 
   <script>
     (function(){
