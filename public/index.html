@@ -669,6 +669,75 @@
     opacity:1;
     transform:translateY(0);
   }
+
+  /* ---------- private zone (passkey) ---------- */
+  #private-zone .wrap{ padding-top:8px; padding-bottom:64px; }
+  .pz-card{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:28px;
+  }
+  .pz-card p{ color:var(--ink-soft); margin-top:0; }
+  .pz-tabs{ display:flex; gap:10px; margin:14px 0 18px; }
+  .pz-tabs button{
+    font-family:'IBM Plex Sans KR', sans-serif;
+    font-size:13px;
+    padding:9px 16px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:var(--paper);
+    color:var(--ink);
+    cursor:pointer;
+  }
+  .pz-tabs button.active{ background:var(--ink); color:#fff; border-color:var(--ink); }
+  #pz-login-form, #pz-register-form, #pz-add-cred-form{
+    display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px;
+  }
+  #pz-login-form[hidden], #pz-register-form[hidden], #pz-add-cred-form[hidden]{
+    display:none;
+  }
+  #pz-login-form input, #pz-register-form input, #pz-add-cred-form input{
+    flex:1 1 180px;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font-family:inherit;
+    font-size:14px;
+  }
+  #pz-login-form button, #pz-register-form button, #pz-add-cred-form button{
+    padding:10px 16px;
+    border-radius:8px;
+    border:1px solid var(--signal);
+    background:var(--signal);
+    color:#fff;
+    font-family:inherit;
+    font-size:14px;
+    cursor:pointer;
+  }
+  .pz-msg{ font-family:'IBM Plex Mono', monospace; font-size:12.5px; min-height:1.4em; }
+  .pz-note{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 14px;
+    margin-bottom:10px;
+    background:var(--paper);
+  }
+  .pz-note p{ margin:4px 0 0; }
+  #pz-creds{ list-style:none; padding:0; margin:0 0 16px; }
+  #pz-creds li{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 0; border-bottom:1px solid var(--line);
+    font-size:14px; color:var(--ink-soft);
+  }
+  #pz-creds button{
+    border:1px solid var(--line); background:transparent; color:#c0392b;
+    border-radius:6px; padding:4px 10px; font-size:12px; cursor:pointer;
+  }
+  #pz-logout{
+    margin-top:8px; padding:9px 16px; border-radius:8px;
+    border:1px solid var(--line); background:transparent; cursor:pointer; font-family:inherit;
+  }
 </style>
 </head>
 <body>
@@ -866,6 +935,56 @@
     </div>
   </section>
 
+  <section id="private-zone">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>비공개 자리</h2>
+        <span class="count">PASSKEY ONLY</span>
+      </div>
+
+      <div class="pz-card">
+        <div id="pz-guest">
+          <p>여기부터는 비밀번호가 아니라 <strong>패스키</strong>로만 열립니다. 아래에서 로그인하거나, 처음이라면 등록하세요.</p>
+          <div class="pz-tabs">
+            <button id="pz-show-login" type="button" class="active">로그인</button>
+            <button id="pz-show-register" type="button">패스키 등록(가입)</button>
+          </div>
+
+          <form id="pz-login-form">
+            <input id="pz-login-username" placeholder="아이디" autocomplete="username webauthn" required>
+            <button type="submit">패스키로 로그인</button>
+          </form>
+
+          <form id="pz-register-form" hidden>
+            <input id="pz-reg-username" placeholder="아이디" required>
+            <input id="pz-reg-display" placeholder="표시 이름" required>
+            <input id="pz-reg-nickname" placeholder="이 패스키 이름 (예: 내 노트북)" required>
+            <button type="submit">패스키 등록</button>
+          </form>
+
+          <p id="pz-msg" class="pz-msg"></p>
+        </div>
+
+        <div id="pz-member" hidden>
+          <p>안녕하세요, <strong id="pz-username"></strong>님 — 패스키로 로그인된 상태입니다.</p>
+
+          <h3 style="font-size:15px;">비공개 항목</h3>
+          <div id="pz-notes"></div>
+
+          <h3 style="font-size:15px;">등록된 패스키</h3>
+          <ul id="pz-creds"></ul>
+          <form id="pz-add-cred-form">
+            <input id="pz-add-nickname" placeholder="새 패스키 이름 (예: 내 폰)" required>
+            <button type="submit">새 패스키 추가</button>
+          </form>
+
+          <p id="pz-member-msg" class="pz-msg"></p>
+          <button id="pz-logout" type="button">로그아웃</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <footer>
     <div class="wrap">
       <span class="name">김준오</span>
@@ -983,6 +1102,156 @@
       }, { threshold:0.15 });
       items.forEach(function(el){ observer.observe(el); });
     })();
+  </script>
+
+  <script type="module">
+    import { startRegistration, startAuthentication } from 'https://cdn.jsdelivr.net/npm/@simplewebauthn/browser@14/+esm';
+
+    var $ = function(id){ return document.getElementById(id); };
+
+    function setMsg(el, text, ok){
+      el.textContent = text;
+      el.style.color = ok ? '#1f7a5c' : '#c0392b';
+    }
+
+    async function api(path, opts){
+      opts = opts || {};
+      var res = await fetch(path, {
+        method: opts.method || 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: opts.body ? JSON.stringify(opts.body) : undefined,
+      });
+      var data = {};
+      try { data = await res.json(); } catch(e){}
+      if(!res.ok) throw new Error(data.error || ('요청 실패 (' + res.status + ')'));
+      return data;
+    }
+
+    function showGuest(){ $('pz-guest').hidden = false; $('pz-member').hidden = true; }
+    function showMember(username){
+      $('pz-guest').hidden = true;
+      $('pz-member').hidden = false;
+      $('pz-username').textContent = username;
+    }
+
+    async function refreshMember(){
+      var notesRes = await api('/api/private/notes');
+      var credsRes = await api('/api/private/credentials');
+
+      $('pz-notes').innerHTML = notesRes.notes.length
+        ? notesRes.notes.map(function(n){
+            return '<div class="pz-note"><strong>' + n.title + '</strong><p>' + n.content + '</p></div>';
+          }).join('')
+        : '<p>(아직 비공개 항목이 없습니다)</p>';
+
+      $('pz-creds').innerHTML = credsRes.credentials.map(function(c){
+        var d = new Date(c.created_at).toLocaleDateString('ko-KR');
+        return '<li><span>' + c.nickname + ' &middot; ' + d + '</span>' +
+          '<button class="pz-del" data-id="' + c.id + '">삭제</button></li>';
+      }).join('');
+
+      var totalCreds = credsRes.credentials.length;
+      document.querySelectorAll('.pz-del').forEach(function(btn){
+        btn.addEventListener('click', async function(){
+          if(totalCreds <= 1){
+            var ok = confirm('마지막 남은 패스키입니다. 지금 지우면 이 계정에는 다시 로그인할 수 없습니다. 정말 삭제할까요?');
+            if(!ok) return;
+          }
+          try {
+            await api('/api/private/credentials/' + btn.dataset.id, { method: 'DELETE' });
+            refreshMember();
+          } catch(e){
+            setMsg($('pz-member-msg'), e.message, false);
+          }
+        });
+      });
+    }
+
+    async function checkSession(){
+      try {
+        var data = await api('/api/private/me');
+        if(data.authenticated){
+          showMember(data.user.username);
+          refreshMember();
+        } else {
+          showGuest();
+        }
+      } catch(e){
+        showGuest();
+      }
+    }
+
+    $('pz-show-login').addEventListener('click', function(){
+      $('pz-login-form').hidden = false;
+      $('pz-register-form').hidden = true;
+      $('pz-show-login').classList.add('active');
+      $('pz-show-register').classList.remove('active');
+    });
+    $('pz-show-register').addEventListener('click', function(){
+      $('pz-register-form').hidden = false;
+      $('pz-login-form').hidden = true;
+      $('pz-show-register').classList.add('active');
+      $('pz-show-login').classList.remove('active');
+    });
+
+    $('pz-register-form').addEventListener('submit', async function(e){
+      e.preventDefault();
+      var msg = $('pz-msg');
+      try {
+        var username = $('pz-reg-username').value.trim();
+        var displayName = $('pz-reg-display').value.trim();
+        var nickname = $('pz-reg-nickname').value.trim();
+        var opt = await api('/api/auth/register/options', { method: 'POST', body: { username: username, displayName: displayName } });
+        var credential = await startRegistration({ optionsJSON: opt.options });
+        await api('/api/auth/register/verify', { method: 'POST', body: { userId: opt.userId, credential: credential, nickname: nickname } });
+        setMsg(msg, '패스키 등록 완료! 로그인되었습니다.', true);
+        showMember(username);
+        refreshMember();
+      } catch(err){
+        setMsg(msg, err.message, false);
+      }
+    });
+
+    $('pz-login-form').addEventListener('submit', async function(e){
+      e.preventDefault();
+      var msg = $('pz-msg');
+      try {
+        var username = $('pz-login-username').value.trim();
+        var opt = await api('/api/auth/login/options', { method: 'POST', body: { username: username } });
+        var credential = await startAuthentication({ optionsJSON: opt.options });
+        await api('/api/auth/login/verify', { method: 'POST', body: { userId: opt.userId, credential: credential } });
+        setMsg(msg, '로그인 성공', true);
+        showMember(username);
+        refreshMember();
+      } catch(err){
+        setMsg(msg, err.message, false);
+      }
+    });
+
+    $('pz-add-cred-form').addEventListener('submit', async function(e){
+      e.preventDefault();
+      var msg = $('pz-member-msg');
+      try {
+        var nickname = $('pz-add-nickname').value.trim();
+        var username = $('pz-username').textContent;
+        var opt = await api('/api/auth/register/options', { method: 'POST', body: { username: username } });
+        var credential = await startRegistration({ optionsJSON: opt.options });
+        await api('/api/auth/register/verify', { method: 'POST', body: { userId: opt.userId, credential: credential, nickname: nickname } });
+        setMsg(msg, '새 패스키를 추가했습니다.', true);
+        $('pz-add-nickname').value = '';
+        refreshMember();
+      } catch(err){
+        setMsg(msg, err.message, false);
+      }
+    });
+
+    $('pz-logout').addEventListener('click', async function(){
+      await api('/api/auth/logout', { method: 'POST' });
+      showGuest();
+    });
+
+    checkSession();
   </script>
 
 </body>

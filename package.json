@@ -1,0 +1,18 @@
+{
+  "name": "my-page-passkey",
+  "version": "1.0.0",
+  "private": true,
+  "description": "T08 - 소개 페이지에 패스키(WebAuthn)로 잠긴 비공개 자리 붙이기",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "@simplewebauthn/server": "^14.0.1",
+    "@supabase/supabase-js": "^2.45.4",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}
