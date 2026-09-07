@@ -1,22 +1,6 @@
-require('dotenv').config();
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const path = require('path');
-
-const authRoutes = require('./routes/auth');
-const privateRoutes = require('./routes/private');
-
-const app = express();
-app.use(express.json());
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/api/auth', authRoutes);
-app.use('/api/private', privateRoutes);
-
-app.get('/health', (req, res) => res.json({ ok: true }));
-
-// SPA 라우팅: 그 외 GET 요청은 index.html로 (선택 사항, 지금은 단일 페이지라 없어도 무방)
+// 로컬 개발 실행용. 실제 로직은 api/index.js에 있고(Vercel 서버리스 함수 겸용),
+// 여기서는 그 Express 앱을 그대로 가져와 로컬 포트에서 계속 띄워두기만 한다.
+const app = require('./api/index.js');
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`서버 실행 중: http://localhost:${PORT}`));

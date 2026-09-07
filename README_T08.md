@@ -6,10 +6,12 @@
 ## 폴더 구조
 ```
 public/index.html      1번 과제 소개 페이지 + 비공개 자리 UI/스크립트
-server.js              Express 서버 진입점
+api/index.js           Express 앱 (Vercel 서버리스 함수 겸용)
+server.js              로컬 개발 실행용 (api/index.js를 가져와 app.listen만 추가)
+vercel.json            모든 요청을 api/index.js로 보내는 Vercel 라우팅 설정
 routes/auth.js         등록 · 로그인 · 로그아웃 (WebAuthn)
 routes/private.js      비공개 자료 조회 · 패스키 목록/삭제 (세션 필요)
-lib/session.js         세션 쿠키(JWT) 발급/검증
+lib/session.js         세션 발급/검증/폐기 (서버 DB의 sessions 테이블 기반)
 lib/webauthn.js        RP_NAME / RP_ID / ORIGIN 설정
 lib/supabase.js        Supabase 클라이언트
 schema.sql             Supabase에 실행할 테이블 정의
@@ -31,15 +33,24 @@ npm start
 브라우저에서 `http://localhost:3000` 접속. **주의**: 패스키는 HTTPS 또는 `localhost`에서만 동작한다
 (개발 중엔 `localhost`가 예외로 허용됨).
 
-## 3. 실제 배포 (예: Render.com)
-Render, Railway, Fly.io처럼 Node.js 프로세스를 계속 띄워 두는 곳이면 어디든 가능하다.
+## 3. 실제 배포 (Vercel)
+이 프로젝트는 Vercel 서버리스 방식에 맞춰져 있다 (`api/index.js` + `vercel.json`).
+`server.js`는 로컬 개발용으로만 쓰이고, 실제 배포에서는 Vercel이 `api/index.js`를 함수로 실행한다.
 
 1. 이 저장소를 GitHub에 올린다 (`git push`).
-2. Render에서 "New Web Service" → 이 저장소 연결 → Build Command `npm install`, Start Command `npm start`.
-3. 환경변수에 `.env`와 같은 값을 넣되, 이번엔 실제 배포 도메인 기준으로 설정한다.
-   - `RP_ID` = 배포 도메인 (예: `my-page.onrender.com`, `https://`나 포트는 빼고 도메인만)
-   - `ORIGIN` = `https://my-page.onrender.com` (실제 배포 주소, 스킴 포함)
-4. 배포가 끝나면 그 HTTPS 주소가 제출물의 "결과물 URL"이 된다.
+2. https://vercel.com 에서 "Add New... → Project" → 이 저장소 선택 → Import.
+3. Project Settings → Environment Variables 에 아래를 등록한다.
+   - `SUPABASE_URL`
+   - `SUPABASE_SERVICE_KEY`
+   - `RP_NAME` = `My Page` (원하는 이름)
+   - `RP_ID` = 배포 도메인만, **스킴(`https://`)도 끝의 `/`도 빼고** (예: `my-page-phi-blush.vercel.app`)
+   - `ORIGIN` = 실제 접속 주소 전체, **스킴 포함** (예: `https://my-page-phi-blush.vercel.app`)
+4. Deploy. 배포가 끝나면 그 HTTPS 주소가 제출물의 "결과물 URL"이 된다.
+5. `RP_ID`/`ORIGIN`을 나중에 바꾸면(예: 커스텀 도메인 연결) 반드시 재배포해서 환경변수가 새로 적용되게 한다.
+
+### 다른 곳에 배포하고 싶다면 (Render, Railway 등)
+서버리스가 아니라 Node.js 프로세스를 계속 띄워두는 곳이라면 `api/index.js` 대신 `server.js`를
+실행하면 된다 (Start Command: `npm start`, 즉 `node server.js`). `vercel.json`은 무시해도 무방하다.
 
 ## 4. 제출 전 직접 확인해야 하는 것
 코드는 아래 동작을 하도록 작성되어 있지만, 패스키는 실제 브라우저 + 실제 기기(지문/얼굴/보안키)가
