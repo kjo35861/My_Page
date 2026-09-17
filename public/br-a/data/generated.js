@@ -87,13 +87,13 @@ window.PORTFOLIO_DATA = {
         "value": 10
       },
       {
-        "display": "확인 대기",
+        "display": "13개 / 13개 · 전체 제출",
         "id": "submissions",
         "label": "과제 제출",
-        "note": "원자료 수치를 입력하면 자동 반영됩니다.",
-        "source": "내 제출 현황",
-        "unit": "",
-        "value": null
+        "note": "제출 현황 화면에 표시된 13개 과제 카드가 모두 제출 완료 상태로 확인되었습니다.",
+        "source": "내 제출 현황 · 2026-09-17 화면",
+        "unit": "개",
+        "value": 13
       }
     ],
     "period_label": "13주 학습 과정"
@@ -116,17 +116,17 @@ window.PORTFOLIO_DATA = {
         "title": "JavaScript 반복 검색에서 Array.includes와 Set.has의 성능 비교"
       },
       {
-        "date": "과제 13 완료 후",
+        "date": "2026-09-17 제출 현황 확인",
         "facts": [
-          "현재 제출에서는 자리만 마련",
-          "완료 후 링크·설명·성과를 추가"
+          "제출 현황 화면에서 과제 13을 포함한 13개 과제 모두 제출 완료 상태 확인",
+          "앱 공개 URL과 핵심 기능 설명은 별도 확인 후 대표작 카드에 추가"
         ],
         "href": null,
         "id": "app13",
         "kind": "과제 13 · 앱",
-        "status": "planned",
-        "subtitle": "대표작 두 번째 자리",
-        "title": "13번 과제 완료 후 추가 예정"
+        "status": "submitted_pending_details",
+        "subtitle": "공개 링크와 핵심 기능 설명 확인 후 대표작 카드 확정",
+        "title": "과제 13 앱 · 제출 완료"
       }
     ]
   }
