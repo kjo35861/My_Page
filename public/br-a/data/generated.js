@@ -116,17 +116,19 @@ window.PORTFOLIO_DATA = {
         "title": "JavaScript 반복 검색에서 Array.includes와 Set.has의 성능 비교"
       },
       {
-        "date": "과제 13 완료 후",
+        "date": "2026-09-21",
         "facts": [
-          "현재 과제 12 진행 중",
-          "과제 13 완료 후 공개 URL·핵심 기능·역할·성과를 추가"
+          "과제 10 논문의 실제 측정값을 앱 판단 근거로 사용",
+          "검색 자체 비교와 Set 생성 비용 + 100회 검색 비교 제공",
+          "미측정 데이터 크기는 임의 추정하지 않고 범위 밖으로 안내",
+          "Render 공개 URL로 로그인 없이 실행"
         ],
-        "href": null,
+        "href": "https://br-b-js-structure-advisor-1.onrender.com/",
         "id": "app13",
-        "kind": "과제 13 · 앱",
-        "status": "planned",
-        "subtitle": "현재 과제 12 진행 중 · 과제 13 완료 후 대표작 카드 확정",
-        "title": "과제 13 앱 · 예정"
+        "kind": "과제 13 · 논문 반영 앱",
+        "status": "complete",
+        "subtitle": "Array.includes와 Set.has 실험 결과를 실제 개발 판단 화면으로 옮긴 웹앱",
+        "title": "JavaScript Membership Advisor"
       }
     ]
   }
